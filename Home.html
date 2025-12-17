@@ -40,6 +40,8 @@
       color: var(--text-main);
       min-height: 100vh;
       line-height: 1.5;
+      overscroll-behavior: none;
+      background-color: #000; /* Fallback */
     }
 
     a {
@@ -493,17 +495,18 @@
       </a>
 
       <nav class="nav-links">
-        <a href="#home" class="nav-link active">Home</a>
-        <a href="#about" class="nav-link">About</a>
-        <a href="#skills" class="nav-link">Skills</a>
-        <a href="#projects" class="nav-link">Projects</a>
-        <a href="#contact" class="nav-link">Contact</a>
+        <a href="Home.html" class="nav-link active">Home</a>
+        <a href="about.html" class="nav-link">About</a>
+        <a href="skills.html" class="nav-link">Skills</a>
+        <a href="projects.html" class="nav-link">Projects</a>
+        <a href="contact.html" class="nav-link">Contact</a>
       </nav>
     </div>
   </header>
 
   <!-- Page content -->
-  <main class="page" id="home">
+  <main>
+    <section id="home" class="page">
     <section class="hero">
       <!-- Left side -->
       <div class="hero-left">
@@ -589,9 +592,10 @@
         </div>
       </div>
     </section>
-  </main>
+    </section>
 
-  <!-- Typing effect script -->
+
+  </main>
   <script>
     const roles = [
       "Web Developer",
