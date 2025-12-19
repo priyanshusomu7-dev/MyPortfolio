@@ -480,6 +480,67 @@
         font-size: 0.92rem;
       }
     }
+    /* Animation: Shockwave & Pulse */
+    .logo-mark {
+      position: relative;
+      /* Ensure z-index allows the ripple to be seen but not block clicks if needed, 
+         though for visual flair it just needs to be visible */
+    }
+
+    .logo-pop {
+      animation: logoPop 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+
+    @keyframes logoPop {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.4) rotate(10deg); }
+      100% { transform: scale(1) rotate(0deg); }
+    }
+
+    .shockwave {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      transform: translate(-50%, -50%);
+      pointer-events: none;
+      z-index: -1;
+    }
+
+    /* We'll animate this class via JS appended style or class */
+    .shockwave-active {
+      animation: shockwaveRipple 0.8s ease-out forwards;
+      border: 2px solid var(--accent); /* Fallback color */
+      box-shadow: 0 0 20px var(--accent);
+    }
+
+    @keyframes shockwaveRipple {
+      0% {
+        width: 100%;
+        height: 100%;
+        opacity: 0.8;
+        border-width: 4px;
+      }
+      100% {
+        width: 400%;
+        height: 400%;
+        opacity: 0;
+        border-width: 0px;
+      }
+    }
+    /* Page Transition Styles */
+    body {
+      opacity: 0;
+      transition: opacity 0.5s ease-in-out;
+    }
+    body.fade-in {
+      opacity: 1;
+    }
+    body.fade-out {
+      opacity: 0;
+    }
   </style>
 </head>
 
@@ -597,6 +658,37 @@
 
   </main>
   <script>
+    // Page Transition Script
+    document.addEventListener('DOMContentLoaded', () => {
+      // Fade in on load
+      document.body.classList.add('fade-in');
+
+      // Intercept links
+      const links = document.querySelectorAll('a');
+      
+      links.forEach(link => {
+        link.addEventListener('click', (e) => {
+          const href = link.getAttribute('href');
+          
+          // Only animate if it's an internal link and not an anchor on same page
+          if (href && !href.startsWith('#') && !href.startsWith('mailto:') && targetIsSameDomain(href)) {
+            e.preventDefault();
+            document.body.classList.remove('fade-in');
+            document.body.classList.add('fade-out');
+            
+            setTimeout(() => {
+              window.location.href = href;
+            }, 500); // Match transition duration
+          }
+        });
+      });
+    });
+
+    function targetIsSameDomain(href) {
+      // Basic check, can be expanded if needed
+      return !href.startsWith('http') || href.includes(window.location.hostname);
+    }
+
     const roles = [
       "Web Developer",
       "AI/ML Explorer",
@@ -632,6 +724,39 @@
     }
 
     type();
+
+    // Logo Double Click Animation: Pulse & Shockwave
+    const logoMark = document.querySelector('.logo-mark');
+
+    logoMark.addEventListener('dblclick', () => {
+      // 1. Trigger Logo Pop Animation
+      // Remove class if it exists to restart animation
+      logoMark.classList.remove('logo-pop');
+      void logoMark.offsetWidth; // Trigger reflow
+      logoMark.classList.add('logo-pop');
+
+      // 2. Create Shockwave Effect
+      const shockwave = document.createElement('div');
+      shockwave.classList.add('shockwave', 'shockwave-active');
+      
+      // Pick a random vibrant color for the shockwave
+      const colors = ['#38bdf8', '#22c55e', '#a855f7', '#facc15'];
+      const randomColor = colors[Math.floor(Math.random() * colors.length)];
+      
+      shockwave.style.borderColor = randomColor;
+      shockwave.style.boxShadow = `0 0 30px ${randomColor}`;
+
+      // Append to logoMark so it expands from center
+      logoMark.appendChild(shockwave);
+
+      // 3. Cleanup after animation
+      setTimeout(() => {
+        // Remove shockwave element
+        shockwave.remove();
+        // Remove pop class
+        logoMark.classList.remove('logo-pop');
+      }, 800); // Match animation duration
+    });
   </script>
 </body>
 </html>
