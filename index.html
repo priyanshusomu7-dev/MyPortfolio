@@ -1,0 +1,641 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Priyanshu | Premium Portfolio</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Outfit:wght@400;600;700;800&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --bg-main: #030712;
+      --nav-bg: rgba(3, 7, 18, 0.7);
+      --text-main: #f9fafb;
+      --text-muted: #9ca3af;
+      --accent: #38bdf8;
+      --accent-soft: rgba(56, 189, 248, 0.15);
+      --accent-secondary: #818cf8;
+      --accent-tertiary: #c084fc;
+      --border-subtle: rgba(255, 255, 255, 0.08);
+      --glass-bg: rgba(17, 24, 39, 0.4);
+      --transition-fast: 250ms cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    
+    body {
+      font-family: 'Inter', system-ui, sans-serif;
+      background-color: var(--bg-main);
+      color: var(--text-main);
+      line-height: 1.6;
+      overflow-x: hidden;
+      overscroll-behavior: none;
+    }
+
+    /* Custom Cursor */
+    @media (pointer: fine) {
+      body, a, button { cursor: none; }
+    }
+    #cursor {
+      position: fixed; top: 0; left: 0; pointer-events: none; z-index: 9999;
+      transform: translate(-50%, -50%);
+      width: 18px; height: 18px; background: #fff; border-radius: 50%;
+      mix-blend-mode: difference;
+      transition: width 0.3s cubic-bezier(0.16, 1, 0.3, 1), height 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      will-change: width, height, transform, top, left;
+    }
+    body.hovering #cursor { 
+      width: 65px; height: 65px; background: #fff;
+    }
+
+    /* Background Animation */
+    .bg-mesh {
+      position: fixed; inset: 0; z-index: -10; overflow: hidden;
+    }
+    .bg-mesh::after {
+      content: ""; position: absolute; inset: 0;
+      background: url('data:image/svg+xml;utf8,<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"><filter id="noiseFilter"><feTurbulence type="fractalNoise" baseFrequency="0.65" numOctaves="3" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(%23noiseFilter)"/></svg>');
+      opacity: 0.03; mix-blend-mode: overlay; pointer-events: none;
+    }
+    .blob {
+      position: absolute; border-radius: 50%; filter: blur(120px); opacity: 0.35;
+      animation: float 25s infinite alternate ease-in-out;
+    }
+    .blob-1 { width: 500px; height: 500px; background: var(--accent-secondary); top: 0; left: 0; }
+    .blob-2 { width: 450px; height: 450px; background: var(--accent); bottom: 10%; right: 0; animation-delay: -5s; }
+    .blob-3 { width: 600px; height: 600px; background: var(--accent-tertiary); top: 30%; left: 30%; animation-delay: -10s; }
+
+    @keyframes float {
+      0% { transform: translate(0, 0) scale(1); }
+      33% { transform: translate(100px, -100px) scale(1.1); }
+      66% { transform: translate(-50px, 150px) scale(0.9); }
+      100% { transform: translate(0, 0) scale(1); }
+    }
+
+    a { text-decoration: none; color: inherit; }
+
+    /* Navbar */
+    .navbar {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 50;
+      background: var(--nav-bg); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border-subtle);
+    }
+    .nav-inner {
+      max-width: 1200px; margin: 0 auto; padding: 1rem 2rem;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .logo {
+      display: flex; align-items: center; gap: 0.8rem;
+      font-family: 'Outfit', sans-serif; font-weight: 700; font-size: 1.2rem; letter-spacing: 0.5px;
+    }
+    .logo-mark {
+      width: 36px; height: 36px; border-radius: 50%;
+      background: linear-gradient(135deg, var(--accent), var(--accent-tertiary));
+      padding: 2px; display: flex; align-items: center; justify-content: center;
+      box-shadow: 0 0 20px rgba(56, 189, 248, 0.4);
+    }
+    .logo-mark-inner {
+      width: 100%; height: 100%; border-radius: inherit; background: var(--bg-main);
+      display: flex; align-items: center; justify-content: center;
+      color: var(--text-main); font-size: 0.9rem; font-weight: 700;
+    }
+    .nav-links { display: flex; gap: 2.5rem; font-size: 0.95rem; font-weight: 500; }
+    .nav-link { position: relative; color: var(--text-muted); transition: color 0.3s; }
+    .nav-link::after {
+      content: ""; position: absolute; left: 0; bottom: -4px; width: 0; height: 2px;
+      background: linear-gradient(90deg, var(--accent), var(--accent-secondary));
+      transition: width 0.3s ease; border-radius: 2px;
+    }
+    .nav-link:hover, .nav-link.active { color: var(--text-main); }
+    .nav-link:hover::after, .nav-link.active::after { width: 100%; }
+
+    /* Layout */
+    .page {
+      min-height: 100vh; display: flex; align-items: center; padding: 100px 0;
+    }
+    .hero {
+      max-width: 1200px; width: 100%; margin: 0 auto; padding: 0 2rem;
+      display: flex; align-items: center; justify-content: space-between; gap: 5rem;
+    }
+    .hero.reverse { flex-direction: row-reverse; }
+    .hero-left, .hero-right { flex: 1; }
+
+    /* Glass Panel */
+    .glass-panel {
+      background: var(--glass-bg);
+      backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+      border: 1px solid var(--border-subtle);
+      border-radius: 32px; padding: 3.5rem;
+      box-shadow: 0 30px 60px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.05);
+      position: relative; overflow: hidden;
+    }
+
+    /* Typography */
+    .eyebrow {
+      display: inline-flex; align-items: center; gap: 0.6rem;
+      padding: 0.4rem 1rem; border-radius: 999px;
+      background: rgba(255,255,255,0.03); border: 1px solid var(--border-subtle);
+      color: var(--text-muted); font-size: 0.85rem; margin-bottom: 1.5rem;
+      font-weight: 500; letter-spacing: 0.5px; text-transform: uppercase;
+    }
+    .eyebrow-dot {
+      width: 8px; height: 8px; border-radius: 50%; background: #10b981;
+      box-shadow: 0 0 12px #10b981;
+    }
+    .hero-title {
+      font-family: 'Outfit', sans-serif;
+      font-size: clamp(2.8rem, 4vw + 1rem, 4.5rem); line-height: 1.1; margin-bottom: 1.2rem;
+      font-weight: 800; letter-spacing: -1px;
+    }
+    .highlight {
+      background: linear-gradient(135deg, var(--accent), var(--accent-tertiary));
+      -webkit-background-clip: text; color: transparent;
+    }
+    
+    /* Smooth CSS Text Slider */
+    .hero-subline {
+      display: flex; flex-wrap: wrap; gap: 0.5rem; align-items: center;
+      margin-bottom: 1.5rem; color: var(--text-muted); font-size: 1.1rem;
+    }
+    .text-slider {
+      display: inline-block; height: 1.2em; overflow: hidden; vertical-align: bottom;
+      position: relative;
+    }
+    .text-slider-inner {
+      display: flex; flex-direction: column; 
+      animation: slideText 10s cubic-bezier(0.68, -0.55, 0.265, 1.55) infinite;
+      color: var(--accent); font-weight: 600;
+    }
+    .text-slider-inner span {
+      height: 1.2em; display: flex; align-items: center;
+    }
+    @keyframes slideText {
+      0%, 15% { transform: translateY(0); }
+      25%, 40% { transform: translateY(-1.2em); }
+      50%, 65% { transform: translateY(-2.4em); }
+      75%, 90% { transform: translateY(-3.6em); }
+      100% { transform: translateY(-4.8em); }
+    }
+
+    .hero-description {
+      color: var(--text-muted); font-size: 1.05rem; max-width: 34rem; margin-bottom: 2.5rem;
+      line-height: 1.7;
+    }
+
+    /* Redesigned Premium Buttons */
+    .hero-actions { display: flex; align-items: center; gap: 1rem; flex-wrap: wrap; }
+    
+    .btn-primary {
+      position: relative;
+      background: var(--bg-main); color: var(--text-main);
+      border: 1px solid rgba(56, 189, 248, 0.5);
+      box-shadow: 0 0 15px rgba(56, 189, 248, 0.15);
+      border-radius: 999px; padding: 0.8rem 1.8rem; font-size: 1rem; font-weight: 600;
+      cursor: none; display: inline-block; font-family: 'Outfit', sans-serif;
+      overflow: hidden; z-index: 1;
+      transition: color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease;
+    }
+    .btn-primary::before {
+      content: ''; position: absolute; inset: 0;
+      background: linear-gradient(90deg, var(--accent), var(--accent-tertiary));
+      z-index: -1; transform: scaleX(0); transform-origin: right;
+      transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .btn-primary:hover {
+      color: #000; box-shadow: 0 10px 30px rgba(56, 189, 248, 0.4);
+      border-color: transparent; transform: translateY(-3px);
+    }
+    .btn-primary:hover::before {
+      transform: scaleX(1); transform-origin: left;
+    }
+
+    .btn-ghost {
+      position: relative;
+      background: transparent; border: 1px solid var(--border-subtle); color: var(--text-main);
+      border-radius: 999px; padding: 0.8rem 1.8rem; font-size: 1rem; font-weight: 600;
+      cursor: none; transition: all 0.3s ease; display: inline-block; font-family: 'Outfit', sans-serif;
+    }
+    .btn-ghost:hover {
+      background: rgba(255,255,255,0.05); border-color: var(--text-main); transform: translateY(-3px);
+    }
+
+    /* Hero Visuals */
+    .hero-visual {
+      position: relative; width: 100%; aspect-ratio: 1/1; max-width: 480px; margin: 0 auto;
+      border-radius: 32px; background: linear-gradient(135deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01));
+      backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+      border: 1px solid var(--border-subtle);
+      box-shadow: 0 30px 60px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.05);
+      display: flex; align-items: center; justify-content: center;
+      transform-style: preserve-3d;
+    }
+    
+    /* Creative Scroll Reveals */
+    .reveal {
+      opacity: 0; transition: all 1s cubic-bezier(0.16, 1, 0.3, 1);
+      will-change: transform, opacity, filter;
+    }
+    /* Home */
+    .reveal-left { transform: translateX(-80px); }
+    .reveal-right { transform: translateX(80px); }
+    
+    /* Other Pages */
+    .reveal-zoom { transform: scale(0.8); }
+    .reveal-flip { transform: perspective(1000px) rotateX(-45deg); transform-origin: top; }
+    .reveal-blur { filter: blur(20px); transform: scale(0.95); }
+    .reveal-elastic { transform: translateY(80px); transition-timing-function: cubic-bezier(0.68, -0.55, 0.265, 1.55); }
+    
+    .reveal.active { opacity: 1; transform: translate(0, 0) scale(1) rotateX(0deg); filter: blur(0); }
+    
+    .stagger-1 { transition-delay: 150ms; }
+    .stagger-2 { transition-delay: 300ms; }
+
+    /* ==================================
+       SPECIFIC VISUALS
+    ================================== */
+    /* 1. Code Window */
+    .code-window {
+      width: 85%; border-radius: 16px; background: #0f172a;
+      border: 1px solid rgba(255,255,255,0.1); box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+      padding: 1rem 1.2rem; transform: translateZ(30px);
+    }
+    .window-top { display: flex; align-items: center; gap: 0.5rem; margin-bottom: 1rem; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 0.8rem;}
+    .dot { width: 10px; height: 10px; border-radius: 50%; }
+    .dot.red { background: #ef4444; } .dot.amber { background: #f59e0b; } .dot.green { background: #10b981; }
+    .code-lines { font-family: ui-monospace, monospace; font-size: 0.85rem; color: #e2e8f0; line-height: 1.6;}
+    .code-tag { color: #38bdf8; } .code-attr { color: #facc15; } .code-value { color: #c084fc; }
+    .pill-badge { position: absolute; bottom: -15px; right: -15px; background: rgba(16,185,129,0.2); color: #10b981; padding: 0.4rem 1rem; border-radius: 999px; border: 1px solid rgba(16,185,129,0.3); font-size: 0.8rem; font-weight: 600; backdrop-filter: blur(10px); transform: translateZ(50px);}
+
+    /* 2. Orb (About) */
+    .orb-visual { position: relative; width: 280px; height: 280px; display: flex; align-items: center; justify-content: center; transform: translateZ(40px);}
+    .orb-core { width: 140px; height: 140px; border-radius: 50%; background: radial-gradient(circle at 30% 30%, var(--accent), var(--accent-tertiary)); box-shadow: 0 0 60px rgba(192, 132, 252, 0.5); position: relative; z-index: 2; animation: pulse-glow 3s infinite alternate; }
+    .orb-ring { position: absolute; border-radius: 50%; border: 1px solid rgba(255,255,255,0.1); animation: spin 15s linear infinite; }
+    .ring-1 { width: 200px; height: 200px; border-top-color: var(--accent); }
+    .ring-2 { width: 250px; height: 250px; border-bottom-color: var(--accent-secondary); animation-direction: reverse; animation-duration: 20s; }
+    .ring-3 { width: 310px; height: 310px; border-left-color: #fff; opacity: 0.2; animation-duration: 25s; }
+    @keyframes pulse-glow { 0% { box-shadow: 0 0 40px rgba(192,132,252,0.3); transform: scale(0.95); } 100% { box-shadow: 0 0 80px rgba(192,132,252,0.6); transform: scale(1.05); } }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* 3. Hex Grid (Skills) */
+    .hex-grid { display: flex; flex-wrap: wrap; width: 280px; justify-content: center; gap: 15px; transform: translateZ(30px);}
+    .hex-item { width: 80px; height: 90px; position: relative; display: flex; align-items: center; justify-content: center; transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1); cursor: none;}
+    .hex-content { position: absolute; inset: 2px; background: rgba(15, 23, 42, 0.8); clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%); display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 2; transition: background 0.3s; }
+    .hex-border { position: absolute; inset: 0; background: linear-gradient(135deg, var(--accent), var(--accent-tertiary)); clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%); z-index: 1; opacity: 0.4; transition: opacity 0.3s; }
+    .hex-item:hover { transform: scale(1.15) translateZ(20px); z-index: 10; }
+    .hex-item:hover .hex-content { background: var(--bg-main); }
+    .hex-item:hover .hex-border { opacity: 1; }
+    .hex-icon { font-size: 1.8rem; filter: drop-shadow(0 0 5px rgba(56, 189, 248, 0.5)); }
+
+    /* 4. Stack (Projects) */
+    .stack-visual { position: relative; width: 220px; height: 260px; perspective: 1200px; transform: translateZ(30px);}
+    .layer { position: absolute; width: 180px; height: 110px; background: linear-gradient(135deg, rgba(56, 189, 248, 0.15), rgba(192, 132, 252, 0.15)); border: 1px solid rgba(255, 255, 255, 0.15); border-radius: 16px; transform-style: preserve-3d; transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1); backdrop-filter: blur(8px); box-shadow: 0 15px 35px rgba(0,0,0,0.3); }
+    .layer:nth-child(1) { top: 0; left: 0; transform: rotateX(60deg) rotateZ(-45deg) translateZ(0px); z-index: 1; }
+    .layer:nth-child(2) { top: 50px; left: 0; transform: rotateX(60deg) rotateZ(-45deg) translateZ(40px); z-index: 2; background: linear-gradient(135deg, rgba(56, 189, 248, 0.25), rgba(192, 132, 252, 0.25)); }
+    .layer:nth-child(3) { top: 100px; left: 0; transform: rotateX(60deg) rotateZ(-45deg) translateZ(80px); z-index: 3; background: linear-gradient(135deg, rgba(56, 189, 248, 0.4), rgba(192, 132, 252, 0.4)); border-color: rgba(255,255,255,0.4); }
+    .hero-visual:hover .layer:nth-child(1) { transform: rotateX(60deg) rotateZ(-45deg) translateZ(-30px); }
+    .hero-visual:hover .layer:nth-child(2) { transform: rotateX(60deg) rotateZ(-45deg) translateZ(60px); }
+    .hero-visual:hover .layer:nth-child(3) { transform: rotateX(60deg) rotateZ(-45deg) translateZ(150px); box-shadow: 0 0 40px var(--accent-tertiary); }
+
+    /* 5. Nodes (Contact) */
+    .connection-visual { position: relative; width: 280px; height: 280px; transform: translateZ(40px);}
+    .node { position: absolute; width: 14px; height: 14px; background: #fff; border-radius: 50%; box-shadow: 0 0 20px var(--accent); z-index: 2; }
+    .node.main { width: 24px; height: 24px; background: var(--accent); top: 50%; left: 50%; transform: translate(-50%, -50%); animation: pulse-node 2s infinite; }
+    .node.n1 { top: 15%; left: 25%; animation: float-node 4s infinite ease-in-out; }
+    .node.n2 { top: 75%; left: 15%; animation: float-node 5s infinite ease-in-out 1s; }
+    .node.n3 { top: 35%; right: 15%; animation: float-node 6s infinite ease-in-out 0.5s; }
+    .node.n4 { bottom: 15%; right: 35%; animation: float-node 4.5s infinite ease-in-out 2s; }
+    .line { position: absolute; top: 50%; left: 50%; height: 2px; background: linear-gradient(90deg, var(--accent), transparent); transform-origin: 0 0; opacity: 0.5; z-index: 1; }
+    .l1 { width: 120px; transform: rotate(-135deg); }
+    .l2 { width: 130px; transform: rotate(145deg); }
+    .l3 { width: 110px; transform: rotate(-30deg); }
+    .l4 { width: 120px; transform: rotate(60deg); }
+    @keyframes pulse-node { 0% { box-shadow: 0 0 0 0 rgba(56, 189, 248, 0.6); } 70% { box-shadow: 0 0 0 20px rgba(56, 189, 248, 0); } 100% { box-shadow: 0 0 0 0 rgba(56, 189, 248, 0); } }
+    @keyframes float-node { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-15px); } }
+
+    /* Specific Visual Container Hover Animations (Replacing generic JS Tilt) */
+    #about .hero-visual { transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.5s ease; }
+    #about .hero-visual:hover { transform: translateY(-10px) scale(1.02); box-shadow: 0 40px 80px rgba(192, 132, 252, 0.3); border-color: rgba(255,255,255,0.2); }
+    #about .hero-visual:hover .orb-ring { animation-duration: 5s; border-color: rgba(255,255,255,0.4); }
+    #about .hero-visual:hover .orb-core { transform: scale(1.2); box-shadow: 0 0 100px var(--accent-tertiary); }
+    
+    #skills .hero-visual { transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.5s ease; }
+    #skills .hero-visual:hover { transform: scale(1.05); box-shadow: 0 0 60px rgba(56, 189, 248, 0.3); border-color: var(--accent); }
+    
+    #projects .hero-visual { transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1), filter 0.5s ease; }
+    #projects .hero-visual:hover { transform: scale(1.04); filter: brightness(1.2); border-color: rgba(255,255,255,0.2); }
+    
+    #contact .hero-visual { transition: transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1); }
+    #contact .hero-visual:hover { transform: rotate(8deg) scale(1.08); border-color: rgba(255,255,255,0.2); }
+    #contact .hero-visual:hover .line { opacity: 0.9; background: linear-gradient(90deg, #fff, var(--accent)); width: 140px; }
+    #contact .hero-visual:hover .node { transform: scale(1.3); }
+
+    /* Responsive */
+    @media (max-width: 968px) {
+      .hero, .hero.reverse { flex-direction: column; text-align: center; gap: 3rem; padding-top: 2rem;}
+      .hero-left, .hero-right { width: 100%; }
+      .hero-description { margin: 0 auto 2.5rem auto; }
+      .hero-actions { justify-content: center; }
+      .hero-subline { justify-content: center; }
+      .nav-links { display: none; }
+      .glass-panel { padding: 2rem; }
+    }
+  </style>
+</head>
+<body>
+  <!-- Custom Cursor -->
+  <div id="cursor"></div>
+
+  <!-- Animated Background -->
+  <div class="bg-mesh">
+    <div class="blob blob-1"></div>
+    <div class="blob blob-2"></div>
+    <div class="blob blob-3"></div>
+  </div>
+
+  <!-- Navbar -->
+  <header class="navbar" id="navbar">
+    <div class="nav-inner">
+      <a href="#home" class="logo">
+        <div class="logo-mark"><div class="logo-mark-inner">P</div></div>
+        <span>Priyanshu | Developer</span>
+      </a>
+      <nav class="nav-links">
+        <a href="#home" class="nav-link active">Home</a>
+        <a href="#about" class="nav-link">About</a>
+        <a href="#skills" class="nav-link">Skills</a>
+        <a href="#projects" class="nav-link">Projects</a>
+        <a href="#contact" class="nav-link">Contact</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <!-- HOME (Kept original left/right scroll animations) -->
+    <section id="home" class="page">
+      <div class="hero">
+        <div class="hero-left reveal reveal-left">
+          <div class="eyebrow">
+            <span class="eyebrow-dot"></span>
+            <span>Computer Science Student</span>
+          </div>
+          <h1 class="hero-title">
+            Hi, I'm <span class="highlight">Priyanshu</span><br />
+            building digital experiences.
+          </h1>
+          <div class="hero-subline">
+            <span>Focused on becoming a</span>
+            
+            <!-- Professional CSS Text Slider (Replaced the janky typing effect) -->
+            <span class="text-slider">
+              <span class="text-slider-inner">
+                <span>Frontend Developer</span>
+                <span>React Specialist</span>
+                <span>UI/UX Enthusiast</span>
+                <span>Full Stack Learner</span>
+                <span>Frontend Developer</span>
+              </span>
+            </span>
+          </div>
+          <p class="hero-description">
+            I enjoy turning ideas into functional and responsive web applications, while continuously exploring scalable architectures and modern web frameworks. Step by step, I am building a strong foundation for the future.
+          </p>
+          <div class="hero-actions">
+            <a href="#projects" class="btn-primary">View Projects</a>
+            <a href="#contact" class="btn-ghost">Contact Me</a>
+          </div>
+        </div>
+
+        <div class="hero-right reveal reveal-right stagger-1">
+          <div class="hero-visual parallax-tilt">
+            <div class="code-window">
+              <div class="window-top">
+                <div class="dot red"></div><div class="dot amber"></div><div class="dot green"></div>
+              </div>
+              <div class="code-lines">
+                <div class="code-line"><span class="code-tag">&lt;Developer</span></div>
+                <div class="code-line">&nbsp;&nbsp;<span class="code-attr">name</span>=<span class="code-value">"Priyanshu"</span></div>
+                <!-- Removed AI/ML -->
+                <div class="code-line">&nbsp;&nbsp;<span class="code-attr">stack</span>=<span class="code-value">["React", "Node.js", "Web"]</span></div>
+                <div class="code-line">&nbsp;&nbsp;<span class="code-attr">status</span>=<span class="code-value">"Learning"</span></div>
+                <div class="code-line"><span class="code-tag">/&gt;</span></div>
+              </div>
+              <div class="pill-badge">Live System</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ABOUT (Different Animation: Flip & Zoom) -->
+    <section id="about" class="page">
+      <div class="hero reverse">
+        <div class="hero-left reveal reveal-flip">
+          <div class="glass-panel">
+            <div class="eyebrow">
+              <span class="eyebrow-dot" style="background:#818cf8;box-shadow:0 0 12px #818cf8"></span>
+              <span>About Me</span>
+            </div>
+            <h1 class="hero-title" style="font-size:3rem">
+              Driven by <span class="highlight">discipline</span>.
+            </h1>
+            <p class="hero-description" style="margin-bottom:1rem">
+              I am an engineering student focused on building practical web applications and strengthening my technical fundamentals. I am currently exploring full-stack development, modern UI/UX design, and performance optimization.
+            </p>
+            <p class="hero-description" style="color:var(--text-main); font-weight:500;">
+              Consistency over motivation. Growth over comfort.
+            </p>
+            <div class="hero-actions" style="margin-top:2rem">
+              <a href="#skills" class="btn-primary">My Tech Stack</a>
+            </div>
+          </div>
+        </div>
+
+        <div class="hero-right reveal reveal-zoom stagger-1">
+          <div class="hero-visual">
+            <div class="orb-visual">
+              <div class="orb-core"></div>
+              <div class="orb-ring ring-1"></div>
+              <div class="orb-ring ring-2"></div>
+              <div class="orb-ring ring-3"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SKILLS (Different Animation: Blur in) -->
+    <section id="skills" class="page">
+      <div class="hero">
+        <div class="hero-left reveal reveal-blur">
+          <div class="glass-panel">
+            <div class="eyebrow">
+              <span class="eyebrow-dot" style="background:#c084fc;box-shadow:0 0 12px #c084fc"></span>
+              <span>Technical Arsenal</span>
+            </div>
+            <h1 class="hero-title" style="font-size:3rem">
+              Modern <span class="highlight">Tools</span>.
+            </h1>
+            <p class="hero-description">
+              I leverage a diverse set of technologies to build performant and user-friendly applications. Picking the right tool for the job.
+            </p>
+            <div style="display:flex;gap:0.8rem;flex-wrap:wrap;margin-top:1.5rem">
+              <span style="background:rgba(255,255,255,0.05);padding:0.5rem 1rem;border-radius:99px;border:1px solid rgba(255,255,255,0.1);font-size:0.9rem">React</span>
+              <span style="background:rgba(255,255,255,0.05);padding:0.5rem 1rem;border-radius:99px;border:1px solid rgba(255,255,255,0.1);font-size:0.9rem">JavaScript</span>
+              <span style="background:rgba(255,255,255,0.05);padding:0.5rem 1rem;border-radius:99px;border:1px solid rgba(255,255,255,0.1);font-size:0.9rem">Node.js</span>
+              <span style="background:rgba(255,255,255,0.05);padding:0.5rem 1rem;border-radius:99px;border:1px solid rgba(255,255,255,0.1);font-size:0.9rem">C++</span>
+              <span style="background:rgba(255,255,255,0.05);padding:0.5rem 1rem;border-radius:99px;border:1px solid rgba(255,255,255,0.1);font-size:0.9rem">Tailwind CSS</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="hero-right reveal reveal-blur stagger-1">
+          <div class="hero-visual">
+            <div class="hex-grid">
+              <div class="hex-item"><div class="hex-border"></div><div class="hex-content"><div class="hex-icon">⚛️</div></div></div>
+              <div class="hex-item"><div class="hex-border"></div><div class="hex-content"><div class="hex-icon">📜</div></div></div>
+              <div class="hex-item"><div class="hex-border"></div><div class="hex-content"><div class="hex-icon">🟢</div></div></div>
+              <div class="hex-item"><div class="hex-border"></div><div class="hex-content"><div class="hex-icon">⚡</div></div></div>
+              <div class="hex-item"><div class="hex-border"></div><div class="hex-content"><div class="hex-icon">🎨</div></div></div>
+              <div class="hex-item"><div class="hex-border"></div><div class="hex-content"><div class="hex-icon">💻</div></div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- PROJECTS (Different Animation: Elastic Pop) -->
+    <section id="projects" class="page">
+      <div class="hero reverse">
+        <div class="hero-left reveal reveal-elastic">
+          <div class="glass-panel">
+            <div class="eyebrow">
+              <span class="eyebrow-dot" style="background:#f59e0b;box-shadow:0 0 12px #f59e0b"></span>
+              <span>My Work</span>
+            </div>
+            <h1 class="hero-title" style="font-size:3rem">
+              Idea to <span class="highlight">Deployment</span>.
+            </h1>
+            <p class="hero-description">
+              Here are some of the projects I've been working on. Ranging from simple web utilities to complex web applications.
+            </p>
+            <div class="hero-actions" style="margin-top:2rem">
+              <a href="https://github.com" class="btn-primary" target="_blank">Visit GitHub</a>
+            </div>
+          </div>
+        </div>
+
+        <div class="hero-right reveal reveal-elastic stagger-1">
+          <div class="hero-visual">
+            <div class="stack-visual">
+              <div class="layer"></div><div class="layer"></div><div class="layer"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CONTACT (Different Animation: Mixed Flip & Zoom) -->
+    <section id="contact" class="page">
+      <div class="hero">
+        <div class="hero-left reveal reveal-zoom">
+          <div class="glass-panel" style="text-align:center; padding: 4rem 2rem;">
+            <div class="eyebrow" style="margin: 0 auto 1.5rem auto;">
+              <span class="eyebrow-dot"></span>
+              <span>Get In Touch</span>
+            </div>
+            <h1 class="hero-title">
+              Let's build something <br/><span class="highlight">amazing</span>.
+            </h1>
+            <p class="hero-description" style="margin: 0 auto 2.5rem auto;">
+              I'm always open to discussing new projects, creative ideas, or opportunities.
+            </p>
+            <a href="mailto:priyanshusomu7@gmail.com" class="btn-primary" style="font-size:1.1rem; padding: 1rem 2.5rem;">Send an Email</a>
+          </div>
+        </div>
+        
+        <div class="hero-right reveal reveal-flip stagger-1">
+           <div class="hero-visual" style="border-radius: 50%;">
+            <div class="connection-visual">
+              <div class="line l1"></div><div class="line l2"></div><div class="line l3"></div><div class="line l4"></div>
+              <div class="node main"></div><div class="node n1"></div><div class="node n2"></div><div class="node n3"></div><div class="node n4"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      
+      // 1. Custom Cursor (Blend Mode Lens)
+      const cursor = document.getElementById('cursor');
+      let mouseX = 0, mouseY = 0, cursorX = 0, cursorY = 0;
+
+      document.addEventListener('mousemove', (e) => {
+        mouseX = e.clientX; mouseY = e.clientY;
+      });
+
+      function loop() {
+        cursorX += (mouseX - cursorX) * 0.25; // smooth drag feel
+        cursorY += (mouseY - cursorY) * 0.25;
+        cursor.style.left = cursorX + 'px'; 
+        cursor.style.top = cursorY + 'px';
+        requestAnimationFrame(loop);
+      }
+      loop();
+
+      document.querySelectorAll('a, button, .parallax-tilt').forEach(el => {
+        el.addEventListener('mouseenter', () => document.body.classList.add('hovering'));
+        el.addEventListener('mouseleave', () => document.body.classList.remove('hovering'));
+      });
+
+      // 2. Scroll Reveal (Intersection Observer)
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('active');
+          }
+        });
+      }, { threshold: 0.15 });
+      document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+      // 3. Scroll Spy (Navbar)
+      const sections = document.querySelectorAll('section.page');
+      const navLinks = document.querySelectorAll('.nav-link');
+      window.addEventListener('scroll', () => {
+        let current = '';
+        const scrollY = window.pageYOffset;
+        sections.forEach(section => {
+          if (scrollY >= section.offsetTop - 300) { current = section.getAttribute('id'); }
+        });
+        navLinks.forEach(link => {
+          link.classList.remove('active');
+          if (link.getAttribute('href') === `#${current}`) link.classList.add('active');
+        });
+      });
+
+      // 4. 3D Parallax Tilt Effect
+      document.addEventListener("mousemove", (e) => {
+        const x = (e.clientX / window.innerWidth - 0.5) * 2;
+        const y = (e.clientY / window.innerHeight - 0.5) * 2;
+        
+        document.querySelectorAll(".parallax-tilt").forEach(el => {
+          el.style.transform = `perspective(1000px) rotateX(${-y * 15}deg) rotateY(${x * 15}deg) scale3d(1.02, 1.02, 1.02)`;
+        });
+      });
+
+      document.addEventListener("mouseleave", () => {
+        document.querySelectorAll(".parallax-tilt").forEach(el => {
+          el.style.transform = `perspective(1000px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)`;
+        });
+      });
+    });
+  </script>
+</body>
+</html>
